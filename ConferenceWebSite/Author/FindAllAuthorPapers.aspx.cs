@@ -37,7 +37,7 @@ public partial class Author_FindAllAuthorPapers : System.Web.UI.Page
         // TODO 1: Construct the SQL statement to retrieve all the submitted papers by an author given the *
         //         author's email address. Display the paper_number, title, abstract and submission type.  *
         //**************************************************************************************************
-        string sql = "";
+        string sql = "select paper.paper_number, paper.title, paper.abstract, paper.submission_type from paper, author, person where person.email = '" + email + "' and person.person_id = author.person_id and author.paper_number = paper.paper_number";
 
         // Retrieve the paper information; exit if an SQL error occurred.
         dtPaper = myConferenceData.GetData(sql);

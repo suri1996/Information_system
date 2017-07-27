@@ -150,7 +150,7 @@ public partial class Author_SubmitPaper : System.Web.UI.Page
             //***********************************************************************************************
             // TODO 4 : Construct the SQL statement to insert ALL the attribute values of the author table. *
             //***********************************************************************************************
-            sql = "insert into author values (" + personId + ", " + paperNumber + ', '" + authorContact + "')";
+            sql = "insert into author values (" + personId + ", " + paperNumber + ", '" + authorContact + "')";
 
             myConferenceData.SetData(sql, trans);
         }

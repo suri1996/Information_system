@@ -43,7 +43,7 @@ public partial class PC_Chair_AddPCMember : System.Web.UI.Page
         //**********************************************************************
         // TODO 1: Construct the SQL statement to check for duplicate PC code. *
         //**********************************************************************
-        string sql = "";
+        string sql = "select count(*) from pc_member where pc_code = '" + pcCode + "'";
 
         decimal count = myConferenceData.GetAggregateValue(sql);
         // If count is -1 an SQL error occurred so, exit
@@ -66,14 +66,14 @@ public partial class PC_Chair_AddPCMember : System.Web.UI.Page
         //************************************************************************************
         // TODO 2: Construct the SQL statement to insert ALL the attribute values of person. *
         //************************************************************************************
-        sql = "";
+        sql = "insert into person values (" + personId + ", '" + personTitle + "', '" + personName + "', '" + personInstitution + "', '" + personCountry + "', '" + personEmail + "', '" + personPhoneNumber + "')";
 
         myConferenceData.SetData(sql, trans);
 
         //****************************************************************************************
         // TODO 3: Construct the SQL statement to insert ALL the attributes values of pc_member. *
         //****************************************************************************************
-        sql = "";
+        sql = "insert into pc_member values ('" + pcCode + "', " + personId + ")";
 
         myConferenceData.SetData(sql, trans);
         myConferenceData.CommitTransaction(trans);

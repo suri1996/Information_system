@@ -43,7 +43,7 @@ public partial class Author_FindPaper : System.Web.UI.Page
         //         title, abstract, submission type and whether any of the authors is a PC member.   *
         //         DO NOT display the decision for the paper.                                        *
         //********************************************************************************************
-        string sql = "";
+        string sql = "select title, abstract, submission_type, is_pc from paper where paper_number = '" + paperNumber + "'";
 
         // Retrieve the paper information.
         dtPaper = myConferenceData.GetData(sql);
@@ -81,7 +81,7 @@ public partial class Author_FindPaper : System.Web.UI.Page
         // TODO 2: Construct the SQL statement to retrieve, for each author, the title, name, institution, *
         //         country, email, phone number and whether the author is the contact author of the paper. *
         //**************************************************************************************************
-        string sql = "";
+        string sql = "select person.title, person.name, person.institution, person.country, person.email, person.phone_number, author.is_contact from author, person where author.paper_number = '" + paperNumber + "' and author.person_id = person.person_id";
 
         // Retrieve the author information.
         dtAuthor = myConferenceData.GetData(sql);

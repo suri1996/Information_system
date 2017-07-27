@@ -34,7 +34,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         //*************************************************************************
         //* TODO 1: Construct the SQL statement to check if the PC code is valid. *
         //*************************************************************************
-        string sql = "";
+        string sql = "select count(*) from pc_member where pc_code = '" + pcCode + "'";
         decimal count = myConferenceData.GetAggregateValue(sql);
         // If count is -1 an SQL error occurred, so exit.
         if (count == -1)
@@ -56,7 +56,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         // TODO 2: Construct the SQL statement to retrieve the paper numbers, in ascending order, that have been *
         //         assigned to the specified PC member and for which the PC member HAS NOT submitted a review.   *
         //********************************************************************************************************
-        sql = "";
+        sql = "select paper_number from assigned_to where pc_code = '" + pcCode + "' and paper_number, pc_code not in (select paper_number, pc_code from referee_report)";
 
         // Retrieve the paper information.
         dtPaperNumber = myConferenceData.GetData(sql);
@@ -96,7 +96,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         //***********************************************************************************
         // TODO 3: Construct the SQL statement to retrieve the title of the selected paper. *
         //***********************************************************************************
-        string sql = "";
+        string sql = "select title from paper where paper_number = '" + paperNumber + "'";
         dtPaperTitle = myConferenceData.GetData(sql);
         // If dtPaperTitle is null an SQL error occurred, so exit.
         if (dtPaperTitle == null)
@@ -109,7 +109,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         //*************************************************************************************
         // TODO 4: Construct the SQL statement to retrieve the authors of the selected paper. *
         //*************************************************************************************
-        sql = "";
+        sql = "select person_id from author where paper_number = '" + paperNumber + "'";
         dtAuthor = myConferenceData.GetData(sql);
         // If dtAuthor is null an SQL error occurred, so exit.
         if (dtAuthor == null)
@@ -184,7 +184,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         //*********************************************************************
         //TODO 5: Construct the SQL statement to insert a review for a paper. *
         //*********************************************************************
-        string sql = "";
+        string sql = "insert into referee_report values ('" + pcCode + "', " + paperNumber + ", '" + relevant + "', '" + technicallyCorrect + "', '" + lengthAndContent + "', " + originality + ", " + impact + ", " + presentation + ", " + technicalDepth + ", " + overallRating + ", " + confidence + ", '" + bestPaper + "', '" + mainContributions + "', '" + strongPoints + "', '" + weakPoints + "', '" + overallSummary + "', '" + detailedComments + "', '" + confidentialComments + "')";
 
         // Insert the review into the database.
         OracleTransaction trans = myConferenceData.BeginTransaction();

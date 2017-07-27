@@ -18,7 +18,7 @@ public partial class PC_Chair_DisplayPCMemberInfo : System.Web.UI.Page
         // TODO 1: Construct the SQL statement to retrieve ALL the information *
         //         for a PC member sorted in ascending order by PC code.       *
         //**********************************************************************
-        string sql = "";
+        string sql = "select * from pc_member order by pc_code";
 
         // Retrieve the PC member information.
         dtPCMember = myConferenceData.GetData(sql);

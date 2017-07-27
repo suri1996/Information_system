@@ -42,6 +42,7 @@ public partial class Author_SubmitPaper : System.Web.UI.Page
     protected void btnAddAuthor_Click(object sender, EventArgs e)
     {
         lblSubmitResultMessage.Visible = false;
+        
         if (txtAuthorName.Text.Trim() == "" | txtInstitution.Text.Trim() == "" | txtEmail.Text.Trim() == "" | txtPhoneNumber.Text.Trim() == "")
         {
             lblSubmitResultMessage.Text = "Please enter all author information.";
@@ -96,9 +97,10 @@ public partial class Author_SubmitPaper : System.Web.UI.Page
         //************************************************************************************
         // TODO 1: Construct the SQL statement to retrieve the current maximum paper number. *
         //************************************************************************************
-        string sql = "";
+        string sql = "select max(paper_number) from paper";
 
         decimal maxPaperNumber = myConferenceData.GetAggregateValue(sql);
+
         // If maxPaperNumber is -1 an SQL error occurred, so exit.
         if (maxPaperNumber == -1)
         {
@@ -117,7 +119,7 @@ public partial class Author_SubmitPaper : System.Web.UI.Page
         //*********************************************************************************************
         // TODO 2: Construct the SQL statement to insert ALL the attribute values of the paper table. *
         //*********************************************************************************************
-        sql = "";
+        sql = "insert into paper values (" + paperNumber + ", '" + paperTitle + "', '" +submissionType + "', '" + paperAbstract + "', '" + pcPaper + "', null)";
 
         // Insert the paper into the database.
         OracleTransaction trans = myConferenceData.BeginTransaction();
@@ -141,14 +143,14 @@ public partial class Author_SubmitPaper : System.Web.UI.Page
             //***********************************************************************************************
             // TODO 3 : Construct the SQL statement to insert ALL the attribute values of the person table. *
             //***********************************************************************************************
-            sql = "";
+            sql = "insert into person values (" + personId + ", '" + authorTitle + "', '"+ authorName + "', '" + authorInstitution + "', '" + authorCountry + "', '" + authorEmail + "', '" + authorPhoneNumber + "')";
 
             myConferenceData.SetData(sql, trans);
 
             //***********************************************************************************************
             // TODO 4 : Construct the SQL statement to insert ALL the attribute values of the author table. *
             //***********************************************************************************************
-            sql = "";
+            sql = "insert into author values (" + personId + ", " + paperNumber + ', '" + authorContact + "')";
 
             myConferenceData.SetData(sql, trans);
         }

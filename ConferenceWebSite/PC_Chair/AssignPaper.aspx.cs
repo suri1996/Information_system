@@ -32,7 +32,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
         // TODO 1: Construct the SQL statement to retrieve all the paper *
         //         numbers to populate the paper number dropdown list.   *
         //****************************************************************
-        string sql = "";
+        string sql = "select paper_number from paper";
 
         // Retrieve the paper information.
         dtPaperNumber = myConferenceData.GetData(sql);
@@ -56,7 +56,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
         //***********************************************************************************
         // TODO 2: Construct the SQL statement to retrieve the title of the selected paper. *
         //***********************************************************************************
-        string sql = "";
+        string sql = "select title from paper where paper_number = '" + paperNumber + "'";
 
         // Retrieve the paper information; exit if an SQL error occurred.
         dtPaperTitle = myConferenceData.GetData(sql);
@@ -75,7 +75,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
         // TODO 3: Construct the SQL statement to retrieve the PC members already assigned to the *
         //         selected paper. For each PC member, display the PC code and PC member name.    *
         //*****************************************************************************************
-        sql = "";
+        sql = "select assigned_to.pc_code, person.name from assigned_to, pc_member, person where assigned_to.paper_number='" + paperNumber + "' and assigned_to.pc_code = pc_member.pc_code and pc_member.person_id = person.person_id";
 
         dtCurrentlyAssigned = myConferenceData.GetData(sql);
         // If DataTable is null, an SQL error occurred, so exit.
@@ -118,7 +118,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
             //         or equal to the selected preference. For each PC member, display the PC code,    *
             //         preference for the selected paper and the number of the papers already assigned. *
             //*******************************************************************************************
-            sql = "";
+            sql = "with result as (select pc_code, count(paper_number)as c from assigned_to group by pc_code) select prefers.pc_code, prefers.preference, result.c from prefers, result where prefers.paper_number = '" + paperNumber + "' and prefers.pc_code not in (select pc_code from assigned_to where paper_number = '" + paperNumber + "') and prefers.preference>='" + preference + "' and result.pc_code = prefers.pc_code";
         }
         else
         {
@@ -127,7 +127,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
             //         selected paper WHO HAVE NOT specified a preference for the paper. For each PC member   *
             //         display the PC code, preference set as null and number of papers already assigned.     *
             //*************************************************************************************************
-            sql = "";
+            sql = "with result as (select pc_code, count(paper_number)as c from assigned_to group by pc_code) select pc_member.pc_code, null, result.c from pc_member, result where pc_member.pc_code not in (select pc_code from assigned_to where paper_number = '" + paperNumber + "') and pc_member.pc_code not in (select pc_code from prefers where paper_number = '" + paperNumber + "') and result.pc_code = pc_member.pc_code";
         }
         dtAvailableForAssignment = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
@@ -189,7 +189,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
                     //****************************************************************************************
                     // TODO 6: Construct the SQL statement to insert a reviewing assignment for a PC member. *
                     //****************************************************************************************
-                    string sql = "";
+                    string sql = "insert into assigned_to values ('" + pcCode + "', " + paperNumber + ")";
 
                     myConferenceData.SetData(sql, trans);
 

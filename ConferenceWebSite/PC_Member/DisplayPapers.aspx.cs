@@ -26,7 +26,7 @@ public partial class PC_Member_DisplayPapers : System.Web.UI.Page
         //*************************************************************************
         //* TODO 1: Construct the SQL statement to check if the PC code is valid. *
         //*************************************************************************
-        string sql = "";
+        string sql = "select count(*) from pc_member where pc_code = '" + pcCode + "'";
         decimal count = myConferenceData.GetAggregateValue(sql);
         // If count is -1 an SQL error occurred so, exit
         if (count == -1)
@@ -49,7 +49,7 @@ public partial class PC_Member_DisplayPapers : System.Web.UI.Page
         // TODO 2: Construct the SQL statement to retrieve the preference, paper_number, title, submission_type and abstract *
         //         ordered by paper number ONLY for those papers for which the PC member HAS ALREADY specified a preference. *
         //********************************************************************************************************************
-        sql = "";
+        sql = "select prefers.prefers, paper.title, paper.submission_type, paper.abstract from paper, prefers where prefers.pc_code = '" + pcCode + "' and prefers.paper_number = paper.paper_number order by paper.paper_number";
 
         dtPaperPreference = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
@@ -79,7 +79,7 @@ public partial class PC_Member_DisplayPapers : System.Web.UI.Page
         // TODO 3: Construct the SQL statement to retrieve the paper number, title, paper type and abstract in ascending *
         //         order by paper number ONLY for those papers for which the PC member HAS NOT specified a preference.   *
         //****************************************************************************************************************
-        sql = "";
+        sql = "select paper.paper_number, paper.title, paper.abstract from paper, prefers where paper.paper_number = prefers.paper_number and prefers.pc_code!='" + pcCode + "' order by paper.paper_number";
 
         dtPaperPreference = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
@@ -129,7 +129,7 @@ public partial class PC_Member_DisplayPapers : System.Web.UI.Page
                 //***************************************************************************
                 // TODO 4: Construct the SQL statement to insert the specified preferences. *
                 //***************************************************************************
-                string sql = "";
+                string sql = "insert into prefers values ('" + pcCode + "', " + paperNumber + ", " + preference + ")";
 
                 myConferenceData.SetData(sql, trans);
             }

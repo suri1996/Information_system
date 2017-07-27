@@ -39,7 +39,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         // TODO 1: Construct the SQL statement to retrieve the paper numbers in ascending order, *
         //         for which the specified PC member has already submitted a review.             *
         //****************************************************************************************
-        string sql = "";
+        string sql = "select paper_number from referee_report where pc_code = '" + pcCode + "' order by paper_number";
 
         // Retrieve the paper numbers and set the paper dropdownlist with the retrieved paper numbers.
         dtPaperNumber = myConferenceData.GetData(sql);
@@ -76,7 +76,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         //***********************************************************************************
         // TODO 2: Construct the SQL statement to retrieve the title of the selected paper. *
         //***********************************************************************************
-        string sql = "";
+        string sql = "select title from paper where paper_number = '" + paperNumber + "'";
         dtPaperTitle = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
         if (dtPaperTitle == null)
@@ -89,7 +89,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         //*************************************************************************************
         // TODO 3: Construct the SQL statement to retrieve the authors of the selected paper. *
         //*************************************************************************************
-        sql = "";
+        sql = "select person_id from author where paper_number = '" + paperNumber + "'";
         dtAuthor = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
         if (dtAuthor == null)
@@ -117,7 +117,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         //*********************************************************************************************************
         // TODO 4: Construct the SQL statement to retrieve the review for the specified PC code and paper number. *
         //*********************************************************************************************************
-        string sql = "";
+        string sql = "select * from referee_report where pc_code = '" + pcCode + "' and paper_number = '" + paperNumber + "'";
         dtRefereeReport = myConferenceData.GetData( sql);
         // If DataTable is null an SQL error occurred, so exit.
         if (dtRefereeReport == null)
@@ -155,7 +155,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         // TODO 5: Construct the SQL statement to retrieve the PC code and the discussion comments for the specifiedd *
         //         paper number. The comments should be shown in ascending order from earliest to latest.             *
         //*************************************************************************************************************
-        string sql = "";
+        string sql = "select pc_code, comments from discussion where paper_number = '" + paperNumber + "' order by sequence_no";
 
         dtDiscussion = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
@@ -207,7 +207,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         // TODO 6: Construct the SQL statement to retrieve the current maximum  *
         //         sequence number in the discussion for this paper.            *
         //***********************************************************************
-        string sql = "";
+        string sql = "select max(sequence_no) from discussion";
 
         decimal maxSequenceNumber = myConferenceData.GetAggregateValue(sql);
         // If maxSequenceNumber is -1 an SQL error occurred, so exit.
@@ -223,7 +223,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         //*****************************************************************************************
         // TODO 7: Construct the SQL statement to insert All the attributes values of discussion. *
         //*****************************************************************************************
-        sql = "";
+        sql = "insert into discussion values (" + sequenceNumber + ", " + paperNumber + ", '" + pcCode + "', '" + comments + "')";
 
         // Insert the paper into the database.
         OracleTransaction trans = myConferenceData.BeginTransaction();

@@ -118,7 +118,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
             //         or equal to the selected preference. For each PC member, display the PC code,    *
             //         preference for the selected paper and the number of the papers already assigned. *
             //*******************************************************************************************
-            sql = "with result as (select pc_code, count(paper_number)as c from assigned_to group by pc_code) select prefers.pc_code, prefers.preference, result.c from prefers, result where prefers.paper_number = '" + paperNumber + "' and prefers.pc_code not in (select pc_code from assigned_to where paper_number = '" + paperNumber + "') and prefers.preference>='" + preference + "' and result.pc_code = prefers.pc_code";
+            sql = "with result as (select pc_code, count(paper_number)as c from assigned_to group by pc_code) select prefers.pc_code, prefers.preference, result.c from prefers, result where prefers.paper_number = '" + paperNumber + "' and prefers.pc_code not in (select pc_code from assigned_to where paper_number = '" + paperNumber + "') and prefers.preference>='" + preference + "' and result.pc_code = prefers.pc_code UNION select pc_code, preference, 0 from prefers where paper_number = '" + paperNumber + "' and preference>='" + preference + "' and pc_code not in (select pc_code from result)";
         }
         else
         {
@@ -127,7 +127,7 @@ public partial class PC_Chair_AssignPaper : System.Web.UI.Page
             //         selected paper WHO HAVE NOT specified a preference for the paper. For each PC member   *
             //         display the PC code, preference set as null and number of papers already assigned.     *
             //*************************************************************************************************
-            sql = "with result as (select pc_code, count(paper_number)as c from assigned_to group by pc_code) select pc_member.pc_code, null, result.c from pc_member, result where pc_member.pc_code not in (select pc_code from assigned_to where paper_number = '" + paperNumber + "') and pc_member.pc_code not in (select pc_code from prefers where paper_number = '" + paperNumber + "') and result.pc_code = pc_member.pc_code UNION select pc_code, null, 0 from pc_member where pc_code not in (select pc_code from prefers where paper_number = '" + paperNumber + "') and pc_code not in (select pc_code from result)";
+            sql = "with result as (select pc_code, count(paper_number)as c from assigned_to group by pc_code) select pc_member.pc_code, null as preference, result.c from pc_member, result where pc_member.pc_code not in (select pc_code from assigned_to where paper_number = '" + paperNumber + "') and pc_member.pc_code not in (select pc_code from prefers where paper_number = '" + paperNumber + "') and result.pc_code = pc_member.pc_code UNION select pc_code, null as preference, 0 from pc_member where pc_code not in (select pc_code from prefers where paper_number = '" + paperNumber + "') and pc_code not in (select pc_code from result)";
         }
         dtAvailableForAssignment = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.

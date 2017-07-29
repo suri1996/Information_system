@@ -56,7 +56,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         // TODO 2: Construct the SQL statement to retrieve the paper numbers, in ascending order, that have been *
         //         assigned to the specified PC member and for which the PC member HAS NOT submitted a review.   *
         //********************************************************************************************************
-        sql = "select paper_number from assigned_to where pc_code = '" + pcCode + "' and paper_number, pc_code not in (select paper_number, pc_code from referee_report)";
+        sql = "select paper_number from assigned_to where pc_code = '" + pcCode + "' and paper_number not in (select paper_number from referee_report where pc_code = '" + pcCode + "') order by paper_number";
 
         // Retrieve the paper information.
         dtPaperNumber = myConferenceData.GetData(sql);
@@ -109,7 +109,7 @@ public partial class PC_Member_SubmitReview : System.Web.UI.Page
         //*************************************************************************************
         // TODO 4: Construct the SQL statement to retrieve the authors of the selected paper. *
         //*************************************************************************************
-        sql = "select person_id from author where paper_number = '" + paperNumber + "'";
+        sql = "select person.person_id, person.name from author, person where paper_number = '" + paperNumber + "' and person.person_id = author.person_id";
         dtAuthor = myConferenceData.GetData(sql);
         // If dtAuthor is null an SQL error occurred, so exit.
         if (dtAuthor == null)

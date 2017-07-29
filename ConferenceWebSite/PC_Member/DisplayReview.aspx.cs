@@ -89,7 +89,7 @@ public partial class PC_Member_DisplayReview : System.Web.UI.Page
         //*************************************************************************************
         // TODO 3: Construct the SQL statement to retrieve the authors of the selected paper. *
         //*************************************************************************************
-        sql = "select person_id from author where paper_number = '" + paperNumber + "'";
+        sql = "select person.person_id, person.name from author, person where paper_number = '" + paperNumber + "' and person.person_id = author.person_id";
         dtAuthor = myConferenceData.GetData(sql);
         // If DataTable is null an SQL error occurred, so exit.
         if (dtAuthor == null)
